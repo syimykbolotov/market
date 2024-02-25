@@ -1,5 +1,7 @@
 import React, { useContext } from "react";
 import { ShopContext } from "../../context";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddProduct = () => {
   const {
@@ -13,15 +15,51 @@ const AddProduct = () => {
     setProductPrice,
     setProductAll,
   } = useContext(ShopContext);
+
+  const error = () =>
+    toast.error("you must write somthing!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  const success = () =>
+    toast.success("item successfully added", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  const warn = () =>
+    toast.warn("this item has already been added", {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+
   function addToProduct() {
     if (productName === "" || productUrl === "" || productPrice === "") {
-      alert("you must write somthing!");
+      error();
     } else if (productAll.find((el) => el.name === productName)) {
-      alert("this item has already been added");
+      warn();
       setProductUrl("");
       setProductName("");
       setProductPrice("");
     } else {
+      success();
       let newProduct = {
         id: productAll.length ? productAll[productAll.length - 1].id + 1 : 1,
         url: productUrl,
@@ -38,6 +76,7 @@ const AddProduct = () => {
       setProductPrice("");
     }
   }
+
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -57,9 +96,11 @@ const AddProduct = () => {
         <div className="addProduct mt-10 flex flex-col items-center gap-8">
           <div class="relative z-0 mb-5 group w-[450px]">
             <input
-              onChange={onChange}
-              type="file"
-              // value={productUrl}
+              // onChange={onChange}
+              // type="file"
+              onChange={(e) => setProductUrl(e.target.value)}
+              type="text"
+              value={productUrl}
               name="floating_email"
               id="floating_email"
               class="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -119,6 +160,7 @@ const AddProduct = () => {
           >
             Add Product
           </button>
+          <ToastContainer />
         </div>
       </div>
     </div>
